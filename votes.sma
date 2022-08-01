@@ -1,11 +1,10 @@
 #include <amxmodx>
 #include <cromchat>
+#include "credits.inc"
+#include "sockets_hz.inc"
 
-#include "include/credits.inc"
-#include "include/sockets_hz.inc"
-
-#define LISTEN_IP "93.114.82.74"
-#define LISTEN_PORT 27014
+#define LISTEN_IP ""
+#define LISTEN_PORT 1234
 
 new g_pcvar_reward;
 
@@ -20,11 +19,11 @@ public plugin_init(){
 
 	hook_cvar_change(g_pcvar_reward, "reward_changed_callback");
 
-	CC_SetPrefix("&x04[LLG]");
+	CC_SetPrefix("&x04[PREFIX]");
 }
 
 public plugin_cfg(){
-	listen();
+	listen_init();
 }
 
 public plugin_end(){
@@ -44,14 +43,15 @@ public listen(){
 	if( !g_socket) {
 		log_amx("Error: Could not listen on %s:%d", LISTEN_IP, LISTEN_PORT);
 	}
+	
 	log_amx("Trying to listen on %s:%d", LISTEN_IP, LISTEN_PORT);
 	socket_unblock(g_socket);
 
-	set_task(1.0, "accept_reply", 1337, _, _, "b");
+	set_task(1.0, "accept_reply", _, _, _, "b");
 
 }
 
-public accept_reply(task_id){
+public accept_reply(){
 	new data[512];
 
 	new socket_client = socket_accept(g_socket);
@@ -63,6 +63,7 @@ public accept_reply(task_id){
 	socket_close(socket_client);
 
 	log_amx("Rewarding Player: %s", data);
+
 	reward(data);
 }
 
