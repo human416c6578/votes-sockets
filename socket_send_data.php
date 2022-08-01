@@ -1,7 +1,5 @@
 <?php
 
-send_data("Sugi", "93.114.82.74", 27014);
-
 function send_data($data, $address, $port){
 
 	/* Create a TCP/IP socket. */
